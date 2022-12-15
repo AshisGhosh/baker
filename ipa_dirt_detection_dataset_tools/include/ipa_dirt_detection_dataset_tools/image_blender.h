@@ -52,11 +52,11 @@ public:
 
 	// rotates the image and mask
 	// @param rotation_angle in [deg]
-	void rotateImage(cv::Mat& image, cv::Mat& image_mask, const double rotation_angle, const double scale_factor=1., const int interpolation_mode=CV_INTER_LINEAR);
+	void rotateImage(cv::Mat& image, cv::Mat& image_mask, const double rotation_angle, const double scale_factor=1., const int interpolation_mode=cv::INTER_LINEAR);
 
 	// rotates an illumination or shadow mask
 	void rotateIlluminationMask(cv::Mat& image, const double rotation_angle, const double scale_factor = 1., const cv::Point translation_offset = cv::Point(0, 0),
-			const int interpolation_mode = CV_INTER_LINEAR);
+			const int interpolation_mode = cv::INTER_LINEAR);
 
 	// reduces an image's bounding box to the area of the mask
 	void shrinkBoundingBox(cv::Mat& image, cv::Mat& image_mask);

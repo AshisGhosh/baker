@@ -231,7 +231,7 @@ void DirtDetection::init()
 	if (dirtMappingMaskFilename_ != "")
 	{
 		ROS_INFO("Opening dirt mapping mask from file: %s.", dirtMappingMaskFilename_.c_str());
-		cv::Mat originalDirtMappingMask = cv::imread(dirtMappingMaskFilename_, CV_LOAD_IMAGE_GRAYSCALE);
+		cv::Mat originalDirtMappingMask = cv::imread(dirtMappingMaskFilename_, cv::IMREAD_GRAYSCALE);
 		cv::Mat temp;
 		cv::resize(originalDirtMappingMask, temp, cv::Size(gridDimensions_.x, gridDimensions_.y));
 		cv::flip(temp, dirtMappingMask_, 0); // flip image to align with the coordinate format of the other grids
@@ -801,7 +801,7 @@ void DirtDetection::databaseTest()
 //	if (debug_["showDirtDetections"] == true)
 //	{
 //		cv::imshow("dirt detections", new_color_image);
-//		cvMoveWindow("dirt detections", 650, 530);
+//		cv::moveWindow("dirt detections", 650, 530);
 //	}
 //	cv::waitKey(10);
 //}
@@ -867,7 +867,7 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 	// check if a ground plane could be found
 	if (found_plane == true)
 	{
-		//cv::cvtColor(plane_color_image, plane_color_image, CV_BGR2Lab);
+		//cv::cvtColor(plane_color_image, plane_color_image, cv::COLOR_BGR2Lab);
 
 //		cv::Mat laplace;
 //		cv::Laplacian(plane_color_image, laplace, CV_32F, 5);
@@ -962,7 +962,7 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 			cv::Mat gridPositiveVotesDisplay;
 			cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
 			cv::imshow("dirt grid", gridPositiveVotesDisplay);
-			cvMoveWindow("dirt grid", 0, 0);
+			cv::moveWindow("dirt grid", 0, 0);
 		}
 
 		// todo: new mode with dirt deletion:
@@ -1040,7 +1040,7 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 //			cv::Mat gridObservationsDisplay;
 //			cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
 //			cv::imshow("observations grid", gridObservationsDisplay);
-//			cvMoveWindow("observations grid", 340, 0);
+//			cv::moveWindow("observations grid", 340, 0);
 //		}
 
 		// publish image of map and dirt spots
@@ -1065,21 +1065,21 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 		if (debug_["showWarpedOriginalImage"] == true)
 		{
 			cv::imshow("warped original image", plane_color_image_warped);
-			//cvMoveWindow("dirt grid", 0, 0);
+			//cv::moveWindow("dirt grid", 0, 0);
 			cv::waitKey(10);
 		}
 
 		if (debug_["showDirtDetections"] == true)
 		{
 			cv::imshow("dirt detections", new_plane_color_image);
-			cvMoveWindow("dirt detections", 650, 530);
+			cv::moveWindow("dirt detections", 650, 530);
 			cv::waitKey(10);
 		}
 
 		if (debug_["showPlaneColorImage"] == true)
 		{
 			cv::imshow("segmented color image", plane_color_image);
-			cvMoveWindow("segmented color image", 650, 0);
+			cv::moveWindow("segmented color image", 650, 0);
 			cv::waitKey(10);
 		}
 		
@@ -1154,7 +1154,7 @@ void DirtDetection::MultiScaledirtDetectionCallback(const sensor_msgs::PointClou
 	// check if a ground plane could be found
 	if (found_plane == true)
 	{
-		//cv::cvtColor(plane_color_image, plane_color_image, CV_BGR2Lab);
+		//cv::cvtColor(plane_color_image, plane_color_image, cv::COLOR_BGR2Lab);
 
 //		cv::Mat laplace;
 //		cv::Laplacian(plane_color_image, laplace, CV_32F, 5);
@@ -1255,7 +1255,7 @@ void DirtDetection::MultiScaledirtDetectionCallback(const sensor_msgs::PointClou
 			cv::Mat gridPositiveVotesDisplay;
 			cv::normalize(gridPositiveVotes_, gridPositiveVotesDisplay, 0., 255*256., cv::NORM_MINMAX);
 			cv::imshow("dirt grid", gridPositiveVotesDisplay);
-			cvMoveWindow("dirt grid", 0, 0);
+			cv::moveWindow("dirt grid", 0, 0);
 		}
 
 		// todo: new mode with dirt deletion:
@@ -1333,7 +1333,7 @@ void DirtDetection::MultiScaledirtDetectionCallback(const sensor_msgs::PointClou
 //			cv::Mat gridObservationsDisplay;
 //			cv::normalize(gridNumberObservations_, gridObservationsDisplay, 0., 255*256., cv::NORM_MINMAX);
 //			cv::imshow("observations grid", gridObservationsDisplay);
-//			cvMoveWindow("observations grid", 340, 0);
+//			cv::moveWindow("observations grid", 340, 0);
 //		}
 
 		// publish image of map and dirt spots
@@ -1359,21 +1359,21 @@ void DirtDetection::MultiScaledirtDetectionCallback(const sensor_msgs::PointClou
 		if (debug_["showWarpedOriginalImage"] == true)
 		{
 			cv::imshow("warped original image", plane_color_image_warped);
-			//cvMoveWindow("dirt grid", 0, 0);
+			//cv::moveWindow("dirt grid", 0, 0);
 			cv::waitKey(10);
 		}
 
 		if (debug_["showDirtDetections"] == true)
 		{
 			cv::imshow("dirt detections", new_plane_color_image);
-			cvMoveWindow("dirt detections", 650, 530);
+			cv::moveWindow("dirt detections", 650, 530);
 			cv::waitKey(10);
 		}
 
 		if (debug_["showPlaneColorImage"] == true)
 		{
 			cv::imshow("segmented color image", plane_color_image);
-			cvMoveWindow("segmented color image", 650, 0);
+			cv::moveWindow("segmented color image", 650, 0);
 			cv::waitKey(10);
 		}
 		
@@ -1465,9 +1465,9 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 
 
 		cv::imshow("original color image", plane_color_image);
-		cvMoveWindow("original color image", 680, 0);
+		cv::moveWindow("original color image", 680, 0);
 		cv::imshow("birds eye perspective", plane_color_image_warped);
-		cvMoveWindow("birds eye perspective", 0, 520);
+		cv::moveWindow("birds eye perspective", 0, 520);
 		int key = cv::waitKey(20);
 
 		//std::cout << "key: " << key << std::endl;
@@ -1477,7 +1477,7 @@ void DirtDetection::planeLabelingCallback(const sensor_msgs::PointCloud2ConstPtr
 		{
 			// start labeling at current image
 			cv::imshow(winName.c_str(), plane_color_image_warped);
-			cvMoveWindow(winName.c_str(), 0, 0);
+			cv::moveWindow(winName.c_str(), 0, 0);
 
 			cv::Mat plane_color_image_warped_copy = plane_color_image_warped.clone();
 			if (labelingStarted_ == false)
@@ -1627,13 +1627,12 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 		}
 		//display original image
 		cv::imshow("original color image", color_image);
-		cvMoveWindow("original color image", 0, 0);
-		cv::waitKey(50);
+		cv::moveWindow("original color image", 0, 0);
 		if (debug_["SaveDataForTest"] == true)
 		{
 			cv::imwrite("test_data/ori_image" + birdeyeresolution + ".jpg", color_image);
 		}
-		//cvMoveWindow("color image", 0, 520);
+		//cv::moveWindow("color image", 0, 520);
 	}
 
 
@@ -2363,7 +2362,7 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
 	if (debug_["showSaliencyDetection"] == true)
 	{
 		cv::imshow("saliency detection", scaled_input_image);
-		cvMoveWindow("saliency detection", 0, 530);
+		cv::moveWindow("saliency detection", 0, 530);
 	}
 
 	//set dirt pixel to white
@@ -2382,7 +2381,7 @@ void DirtDetection::Image_Postprocessing_C1(const cv::Mat& C1_saliency_image, cv
 	std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Vec4i> hierarchy;
 
-	cv::findContours(CV_8UC_image, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+	cv::findContours(CV_8UC_image, contours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
 	cv::Scalar color(0, 255, 0);
 	cv::RotatedRect rec;
@@ -2662,9 +2661,9 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	if (debug_["showSaliencyBadScale"] == true)
 	{
 		cv::imshow("bad scale", badscale);
-		cvMoveWindow("bad scale", 650, 0);
+		cv::moveWindow("bad scale", 650, 0);
 	}
-	//cvMoveWindow("bad scale", 650, 520);
+	//cv::moveWindow("bad scale", 650, 520);
 //	cv::Scalar mean, stdDev;
 //	cv::meanStdDev(C1_saliency_image, mean, stdDev, mask);
 //	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << std::endl;
@@ -2678,12 +2677,12 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	{
 		cv::Mat src, dst, color_dst;
 
-		cv::cvtColor(C3_color_image, src, CV_BGR2GRAY);
+		cv::cvtColor(C3_color_image, src, cv::COLOR_BGRA2GRAY);
 
 		// hack: autonomik
 		//cv::Canny(src, dst, 150, 200, 3);
 		cv::Canny(src, dst, 90, 170, 3);
-		cv::cvtColor(dst, color_dst, CV_GRAY2BGR);
+		cv::cvtColor(dst, color_dst, cv::COLOR_GRAY2BGR);
 
 		std::vector<cv::Vec4i> lines;
 		cv::HoughLinesP(dst, lines, 1, CV_PI/180, 80, 30, 10);
@@ -2705,7 +2704,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	if (debug_["showSaliencyDetection"] == true)
 	{
 		cv::imshow("saliency detection", scaled_C1_saliency_image);
-		cvMoveWindow("saliency detection", 0, 530);
+		cv::moveWindow("saliency detection", 0, 530);
 	}
 
 	//set dirt pixel to white
@@ -2724,7 +2723,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Vec4i> hierarchy;
 
-	cv::findContours(CV_8UC_image, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+	cv::findContours(CV_8UC_image, contours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
 	cv::Scalar green(0, 255, 0);
 	cv::Scalar red(0, 0, 255);

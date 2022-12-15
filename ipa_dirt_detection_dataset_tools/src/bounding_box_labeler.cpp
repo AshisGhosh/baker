@@ -704,7 +704,7 @@ int main(int argc, char* argv[])
 		// Show originalImage
 		std::string window_name = all_image_names[i];
 		cv::imshow(window_name.c_str(), original_image);
-		cvMoveWindow(window_name.c_str(), 0, 0);
+		cv::moveWindow(window_name.c_str(), 0, 0);
 
 		// labelImage object for everything
 		BoundingBoxLabeler label_img(window_name, image_with_rects, original_image, cv::Scalar(0, 0, 0));

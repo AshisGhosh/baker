@@ -23,8 +23,8 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl_ros/point_cloud.h>
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
 #include <opencv2/ml/ml.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>

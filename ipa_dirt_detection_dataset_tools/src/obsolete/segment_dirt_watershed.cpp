@@ -29,7 +29,7 @@ void ipa_dirt_detection_dataset_tools::SegmentDirtWatershed::run()
 		std::string path = entry.path().string();
 		std::cout << "Current Path to dirt frame is: " << path << std::endl;
 
-		dirt_frame_ = cv::imread(path, CV_LOAD_IMAGE_COLOR);
+		dirt_frame_ = cv::imread(path, cv::IMREAD_COLOR);
 		segment();
 		crop();
 
@@ -190,7 +190,7 @@ void ipa_dirt_detection_dataset_tools::SegmentDirtWatershed::examinate()
 	std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Vec4i> hierarchy;
 
-	cv::findContours(mask_frame_, contours, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+	cv::findContours(mask_frame_, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 
 	cv::Mat drawing = dirt_frame_.clone();
 	for (int i = 0; i < contours.size(); i++)

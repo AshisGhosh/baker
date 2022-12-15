@@ -56,7 +56,7 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::run()
 	for (int m = 0; m < clean_ground_filenames_.size(); ++m)
 	{
 		// load clean floor image
-		const cv::Mat clean_ground_image = cv::imread(clean_ground_filenames_[m], CV_LOAD_IMAGE_COLOR);
+		const cv::Mat clean_ground_image = cv::imread(clean_ground_filenames_[m], cv::IMREAD_COLOR);
 
 		// compute average brightness of clean ground image
 		const cv::Scalar image_avg = cv::mean(clean_ground_image);
@@ -207,9 +207,9 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::blendImageDirt(cv::Mat& ble
 	{
 		// select and load dirt image and mask
 		const int dirt_image_index = rand() % num_segmented_dirt_images_;
-		cv::Mat dirt_image = cv::imread(segmented_dirt_filenames_[dirt_image_index], CV_LOAD_IMAGE_COLOR);
+		cv::Mat dirt_image = cv::imread(segmented_dirt_filenames_[dirt_image_index], cv::IMREAD_COLOR);
 		//std::cout << segmented_dirt_filenames_[dirt_image_index] << std::endl;
-		cv::Mat dirt_mask = cv::imread(segmented_dirt_mask_filenames_[dirt_image_index], CV_LOAD_IMAGE_GRAYSCALE);
+		cv::Mat dirt_mask = cv::imread(segmented_dirt_mask_filenames_[dirt_image_index], cv::IMREAD_GRAYSCALE);
 		//std::cout << segmented_dirt_mask_filenames_[dirt_image_index] << std::endl;
 
 		blendImagePatch(blended_image, blended_mask, dirt_image, dirt_mask, clean_ground_image_mean, patch_roi_list, bbox_labels_file, base_filename, "dirt", 2);
@@ -224,9 +224,9 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::blendImageObjects(cv::Mat& 
 	{
 		// select and load object image and mask
 		const int object_image_index = rand() % num_segmented_object_images_;
-		cv::Mat object_image = cv::imread(segmented_objects_filenames_[object_image_index], CV_LOAD_IMAGE_COLOR);
+		cv::Mat object_image = cv::imread(segmented_objects_filenames_[object_image_index], cv::IMREAD_COLOR);
 		//std::cout << segmented_objects_filenames_[object_image_index] << std::endl;
-		cv::Mat object_mask = cv::imread(segmented_objects_mask_filenames_[object_image_index], CV_LOAD_IMAGE_GRAYSCALE);
+		cv::Mat object_mask = cv::imread(segmented_objects_mask_filenames_[object_image_index], cv::IMREAD_GRAYSCALE);
 		//std::cout << segmented_objects_mask_filenames_[object_image_index] << std::endl;
 
 		blendImagePatch(blended_image, blended_mask, object_image, object_mask, clean_ground_image_mean, patch_roi_list, bbox_labels_file, base_filename, getPatchClassname(segmented_objects_filenames_[object_image_index]), 0);
@@ -248,15 +248,15 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::blendImagePatch(cv::Mat& bl
 
 	// 20% of the dirt will be resized
 	double scale_factor = 1.;
-	int interpolation_mode = CV_INTER_LINEAR;
+	int interpolation_mode = cv::INTER_LINEAR;
 	if (class_name.compare("dirt")==0 && rand()%5 == 0)
 	{
 		scale_factor = (rand() % 41 + 80) * 0.01;		// resize ratio in range 0.8 to 1.2
 		//std::cout << "resize scale_factor: " << scale_factor << std::endl;
 		if (scale_factor < 1.)
-			interpolation_mode = CV_INTER_AREA;		// best for shrinking images
+			interpolation_mode = cv::INTER_AREA;		// best for shrinking images
 		if (scale_factor > 1.)
-			interpolation_mode = CV_INTER_CUBIC;	// best for enlarging images
+			interpolation_mode = cv::INTER_CUBIC;	// best for enlarging images
 	}
 
 	// rotate the image patch
@@ -485,7 +485,7 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::edge_smoothing(cv::Mat& ble
 
 	// each contour is stored as a vector of points, than we only need to loop over these points to smooth the object edge
 	cv::Mat temp = blended_mask.clone();
-	cv::findContours(temp, contours, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+	cv::findContours(temp, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 
 	/*
 	 cv::Mat drawing = blended_image.clone();
@@ -622,12 +622,12 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::addBrightnessOrShadowFromTe
 {
 	const int mask_index = rand() % num_brightness_shadow_mask_images_;
 	const std::string mask_filename = brightness_shadow_mask_filenames_[mask_index];
-	cv::Mat mask = cv::imread(mask_filename, CV_LOAD_IMAGE_GRAYSCALE);
+	cv::Mat mask = cv::imread(mask_filename, cv::IMREAD_GRAYSCALE);
 
 	// rotate, scale, and shift the mask randomly
 	const double rotation_angle = rand() % 360;		// in [deg] !
 	const double scale_factor = (rand() % 71 + 80) * 0.01;		// resize ratio in range 0.8 to 1.5
-	const int interpolation_mode = (scale_factor < 1. ? CV_INTER_AREA : (scale_factor > 1. ? CV_INTER_CUBIC : CV_INTER_LINEAR));	// scale_factor=1.0: CV_INTER_LINEAR,  scale_factor<1.0: CV_INTER_AREA,  scale_factor>1.0: CV_INTER_CUBIC
+	const int interpolation_mode = (scale_factor < 1. ? cv::INTER_AREA : (scale_factor > 1. ? cv::INTER_CUBIC : cv::INTER_LINEAR));	// scale_factor=1.0: cv::INTER_LINEAR,  scale_factor<1.0: cv::INTER_AREA,  scale_factor>1.0: cv::INTER_CUBIC
 	const double translation_factor_x = (rand() % 100 - 50) * 0.01;		// in [-0.5, 0.5]
 	const double translation_factor_y = (rand() % 100 - 50) * 0.01;		// in [-0.5, 0.5]
 	const cv::Point translation_offset(translation_factor_x*mask.cols, translation_factor_y*mask.rows);
@@ -672,12 +672,12 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::addIlluminationFromTemplate
 {
 	const int mask_index = rand() % num_illumination_mask_images_;
 	const std::string mask_filename = illumination_mask_filenames_[mask_index];
-	cv::Mat mask = cv::imread(mask_filename, CV_LOAD_IMAGE_GRAYSCALE);
+	cv::Mat mask = cv::imread(mask_filename, cv::IMREAD_GRAYSCALE);
 
 	// rotate, scale, and shift the mask randomly
 	const double rotation_angle = rand() % 360;		// in [deg] !
 	const double scale_factor = (rand() % 71 + 80) * 0.01;		// resize ratio in range 0.8 to 1.5
-	const int interpolation_mode = (scale_factor < 1. ? CV_INTER_AREA : (scale_factor > 1. ? CV_INTER_CUBIC : CV_INTER_LINEAR));	// scale_factor=1.0: CV_INTER_LINEAR,  scale_factor<1.0: CV_INTER_AREA,  scale_factor>1.0: CV_INTER_CUBIC
+	const int interpolation_mode = (scale_factor < 1. ? cv::INTER_AREA : (scale_factor > 1. ? cv::INTER_CUBIC : cv::INTER_LINEAR));	// scale_factor=1.0: cv::INTER_LINEAR,  scale_factor<1.0: cv::INTER_AREA,  scale_factor>1.0: cv::INTER_CUBIC
 	const double translation_factor_x = (rand() % 100 - 50) * 0.01;		// in [-0.5, 0.5]
 	const double translation_factor_y = (rand() % 100 - 50) * 0.01;		// in [-0.5, 0.5]
 	const cv::Point translation_offset(translation_factor_x*mask.cols, translation_factor_y*mask.rows);
@@ -706,9 +706,9 @@ void ipa_dirt_detection_dataset_tools::ImageBlender::resizeDirt(cv::Mat& dirt_im
 //	std::cout << dirt_mask.cols << ' ' << dirt_mask.rows << std::endl;
 	double resize_ratio = (rand() % 4 + 8) / 10.0;		// resize ratio in range 0.8 to 1.2
 	//std::cout << "resize ratio: " << resize_ratio << std::endl;
-	int interpolation_mode = CV_INTER_AREA;		// best for shrinking images
+	int interpolation_mode = cv::INTER_AREA;		// best for shrinking images
 	if (resize_ratio > 1.)
-		interpolation_mode = CV_INTER_CUBIC;	// best for enlarging images
+		interpolation_mode = cv::INTER_CUBIC;	// best for enlarging images
 	cv::resize(dirt_image, dirt_image, cv::Size(0, 0), resize_ratio, resize_ratio, interpolation_mode);
 	cv::resize(dirt_mask, dirt_mask, cv::Size(0, 0), resize_ratio, resize_ratio, interpolation_mode);
 }

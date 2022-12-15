@@ -142,7 +142,7 @@ public:
 		cv::magnitude(referenceDx, referenceDy, referenceMagnitude);
 		cv::Mat patchRotatedDx, patchRotatedDy, patchRotatedMagnitude;
 		cv::Mat grayImage;
-		cv::cvtColor(patchRotated, grayImage, CV_BGR2GRAY);
+		cv::cvtColor(patchRotated, grayImage, cv::COLOR_BGRA2GRAY);
 		cv::Sobel(grayImage, patchRotatedDx, CV_32F, 1, 0, 7);
 		cv::Sobel(grayImage, patchRotatedDy, CV_32F, 0, 1, 7);
 		cv::magnitude(patchRotatedDx, patchRotatedDy, patchRotatedMagnitude);
@@ -200,15 +200,15 @@ public:
 //		std::cout << "Gradient SSD is " << minGradientSSD << " (" << gradientDistance << "), saliency SSD is " << dirtSsd << " (" << dirtDistance << "), signatureDistance is " << signatureDistance << " (" << signatureDistance/((double)referencePatch.cols*referencePatch.rows) << ") at offsets (u,v,rot) = (" << offsetU << ", " << offsetV << ", " << rotationalOffset << ")\n";
 		std::cout << "Gradient SSD is " << minGradientSSD << " (" << gradientDistance << "), signatureDistance is " << signatureDistance << " (" << signatureDistance/((double)referencePatch.cols*referencePatch.rows) << ") at offsets (u,v,rot) = (" << offsetU << ", " << offsetV << ", " << rotationalOffset << ")\n";
 		cv::imshow("referencePatch", referencePatch);
-		cvMoveWindow("referencePatch", 650, 0);
+		cv::moveWindow("referencePatch", 650, 0);
 		cv::imshow("best matching patch", patchRotated(roi));
-		cvMoveWindow("best matching patch", 760, 0);
+		cv::moveWindow("best matching patch", 760, 0);
 		cv::imshow("reference magnitude", referenceMagnitude);
-		cvMoveWindow("reference magnitude", 650, 170);
+		cv::moveWindow("reference magnitude", 650, 170);
 		cv::imshow("patch rotated magnitude", dispPatchRotatedMagnitude);
-		cvMoveWindow("patch rotated magnitude", 760, 170);
+		cv::moveWindow("patch rotated magnitude", 760, 170);
 		cv::imshow("original patch", patch);
-		cvMoveWindow("original patch", 870, 0);
+		cv::moveWindow("original patch", 870, 0);
 		cv::waitKey();
 	}
 
@@ -224,7 +224,7 @@ public:
 		// compute weighted angle histogram
 		cv::Mat grayImage;
 		if (dx.empty() || dy.empty())
-			cv::cvtColor(image, grayImage, CV_BGR2GRAY);
+			cv::cvtColor(image, grayImage, cv::COLOR_BGRA2GRAY);
 		if (dx.empty() == true)
 			cv::Sobel(grayImage, dx, CV_32F, 1, 0, 7);
 		if (dy.empty() == true)
@@ -270,20 +270,20 @@ public:
 			cv::multiply(weightKernel(cv::Rect(0,0,mag.cols, mag.rows)), mag, conv);
 			cv::normalize(mag, mag, 0., 1., cv::NORM_MINMAX);
 			cv::imshow("magnitude", mag);
-			cvMoveWindow("magnitude", 870, 0);
+			cv::moveWindow("magnitude", 870, 0);
 //			cv::normalize(weightKernel, weightKernel, 0., 1., cv::NORM_MINMAX);
 //			cv::imshow("kernel", weightKernel);
-//			cvMoveWindow("kernel", 870, 500);
+//			cv::moveWindow("kernel", 870, 500);
 			cv::normalize(conv, conv, 0., 1., cv::NORM_MINMAX);
 			cv::imshow("conv", conv);
-			cvMoveWindow("conv", 870, 250);
+			cv::moveWindow("conv", 870, 250);
 
 			cv::Mat dispHist(400, 360, CV_8UC1);
 			dispHist.setTo(255);
 			for (int i=0; i<histogram.cols; ++i)
 				cv::line(dispHist, cv::Point(i, 0), cv::Point(i, (int)(1000.f*histogram.at<float>(i))), CV_RGB(0,0,0));
 			cv::imshow("histogram", dispHist);
-			cvMoveWindow("histogram", 760, 750);
+			cv::moveWindow("histogram", 760, 750);
 			cv::waitKey();
 		}
 
@@ -366,13 +366,13 @@ public:
 		for (int i=0; i<signature1.cols; ++i)
 			cv::line(dispHist1, cv::Point(i, 0), cv::Point(i, (int)(1.f*signature1.at<float>(i))), CV_RGB(0,0,0));
 		cv::imshow("signature1", dispHist1);
-		cvMoveWindow("signature1", 0, 750);
+		cv::moveWindow("signature1", 0, 750);
 		cv::Mat dispHist2(400, signature2.cols, CV_8UC1);
 		dispHist2.setTo(255);
 		for (int i=0; i<signature2.cols; ++i)
 			cv::line(dispHist2, cv::Point(i, 0), cv::Point(i, (int)(1.f*signature2.at<float>(i))), CV_RGB(0,0,0));
 		cv::imshow("signature2", dispHist2);
-		cvMoveWindow("signature2", 840, 750);
+		cv::moveWindow("signature2", 840, 750);
 		cv::waitKey(10);
 
 		return signatureDistance;
@@ -682,9 +682,9 @@ public:
 		if (false)
 		{
 			cv::imshow("bad scale", badscale);
-			cvMoveWindow("bad scale", 650, 0);
+			cv::moveWindow("bad scale", 650, 0);
 		}
-		//cvMoveWindow("bad scale", 650, 520);
+		//cv::moveWindow("bad scale", 650, 520);
 	//	cv::Scalar mean, stdDev;
 	//	cv::meanStdDev(C1_saliency_image, mean, stdDev, mask);
 	//	std::cout << "min=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << std::endl;
@@ -698,12 +698,12 @@ public:
 		{
 			cv::Mat src, dst, color_dst;
 
-			cv::cvtColor(C3_color_image, src, CV_BGR2GRAY);
+			cv::cvtColor(C3_color_image, src, cv::COLOR_BGRA2GRAY);
 
 			// hack: autonomik
 			//cv::Canny(src, dst, 150, 200, 3);
 			cv::Canny(src, dst, 90, 170, 3);
-			cv::cvtColor(dst, color_dst, CV_GRAY2BGR);
+			cv::cvtColor(dst, color_dst, cv::COLOR_GRAY2BGR);
 
 			std::vector<cv::Vec4i> lines;
 			cv::HoughLinesP(dst, lines, 1, CV_PI/180, 80, 30, 10);
@@ -725,7 +725,7 @@ public:
 		if (true)
 		{
 			cv::imshow("saliency detection", scaled_C1_saliency_image);
-			cvMoveWindow("saliency detection", 0, 530);
+			cv::moveWindow("saliency detection", 0, 530);
 		}
 
 		//set dirt pixel to white
@@ -745,7 +745,7 @@ public:
 		std::vector<std::vector<cv::Point> > contours;
 		std::vector<cv::Vec4i> hierarchy;
 
-		cv::findContours(CV_8UC_image, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+		cv::findContours(CV_8UC_image, contours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
 		cv::Scalar green(0, 255, 0);
 		cv::Scalar red(0, 0, 255);

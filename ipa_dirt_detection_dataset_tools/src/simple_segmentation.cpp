@@ -49,7 +49,7 @@ void ipa_dirt_detection_dataset_tools::SimpleSegmentation::run()
 		std::cout << "Currently processing dirt image: " << path << std::endl;
 
 		// load image
-		cv::Mat dirt_frame = cv::imread(path, CV_LOAD_IMAGE_COLOR);
+		cv::Mat dirt_frame = cv::imread(path, cv::IMREAD_COLOR);
 
 		// find rectangular background
 		cv::RotatedRect best_fit_rectangle = findRectangularBackground(dirt_frame);
@@ -103,7 +103,7 @@ cv::RotatedRect ipa_dirt_detection_dataset_tools::SimpleSegmentation::findRectan
 {
 	// convert image to gray scale, find Canny edges, find largest contours
 	cv::Mat image_temp, image_canny;
-	cv::cvtColor(image, image_temp, CV_BGR2GRAY);
+	cv::cvtColor(image, image_temp, cv::COLOR_BGRA2GRAY);
 	cv::Canny(image_temp, image_canny, foreground_rectangle_canny1_, foreground_rectangle_canny2_, 5);
 	cv::dilate(image_canny, image_canny, cv::Mat(), cv::Point(-1,-1), 5);	// close 5 pixel gaps in contours
 	cv::erode(image_canny, image_canny, cv::Mat(), cv::Point(-1,-1), 5);
@@ -127,7 +127,7 @@ cv::RotatedRect ipa_dirt_detection_dataset_tools::SimpleSegmentation::findRectan
 
 	std::vector < std::vector<cv::Point> > contours;
 	std::vector < cv::Vec4i > hierarchy;
-	cv::findContours(image_canny, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+	cv::findContours(image_canny, contours, hierarchy, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 //	cv::Mat image_disp = image.clone();
 	std::map<double, cv::RotatedRect> rectangular_contours;		// maps contour area (measured relative to image size) to the respective found rotated rectangle
 	const double image_area_inv = 1./((double)image.rows*image.cols);
@@ -249,7 +249,7 @@ void ipa_dirt_detection_dataset_tools::SimpleSegmentation::segment(const cv::Mat
 
 
 	cv::Mat hsv;
-	cv::cvtColor(image_smoothed, image_preprocessed, CV_BGR2Lab);
+	cv::cvtColor(image_smoothed, image_preprocessed, cv::COLOR_BGR2Lab);
 	std::vector<cv::Mat> hsv_vec;
 	cv::split(image_preprocessed, hsv_vec);
 	cv::imshow("L", hsv_vec[0]);
@@ -352,7 +352,7 @@ void ipa_dirt_detection_dataset_tools::SimpleSegmentation::examine(const cv::Mat
 	std::vector<std::vector<cv::Point> > contours;
 	std::vector<cv::Vec4i> hierarchy;
 	cv::Mat mask = mask_frame.clone();
-	cv::findContours(mask, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
+	cv::findContours(mask, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 	cv::Mat drawing = dirt_frame.clone();
 	cv::drawContours(drawing, contours, -1, cv::Scalar(255, 0, 0), 2, 8, hierarchy);
 

@@ -686,7 +686,7 @@ int main(int argc, char* argv[])
 		std::string winName = "labelBox - ";
 		winName.append(allImageNames[i]);
 		cv::imshow(winName.c_str(), originalImage);
-		cvMoveWindow(winName.c_str(), 0, 0);
+		cv::moveWindow(winName.c_str(), 0, 0);
 
 		// labelImage object for everything
 		labelImage labelImg(winName, imageWithRects, originalImage, cv::Scalar(0, 0, 0));
