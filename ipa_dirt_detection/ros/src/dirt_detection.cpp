@@ -74,7 +74,7 @@
 
 using namespace ipa_DirtDetection;
 
-//#define WITH_MAP   // enables the usage of robot localization
+#define WITH_MAP   // enables the usage of robot localization
 
 
 struct lessPoint2i : public std::binary_function<cv::Point2i, cv::Point2i, bool>
@@ -843,7 +843,7 @@ void DirtDetection::dirtDetectionCallback(const sensor_msgs::PointCloud2ConstPtr
 #endif
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 	convertPointCloudMessageToPointCloudPcl(point_cloud2_rgb_msg, input_cloud);
-        std::cout << input_cloud -> size();
+        std::cout << "Input Cloud Size: " << input_cloud -> size() <<std::endl;
 	// todo: new mode which can delete dirt
 	// reset results (these two lines were not called with the old mode of operation)
 	gridPositiveVotes_ = cv::Mat::zeros(gridDimensions_.y, gridDimensions_.x, CV_32SC1);
@@ -1628,6 +1628,7 @@ bool DirtDetection::planeSegmentation(pcl::PointCloud<pcl::PointXYZRGB>::Ptr inp
 		//display original image
 		cv::imshow("original color image", color_image);
 		cv::moveWindow("original color image", 0, 0);
+		cv::waitKey(50);
 		if (debug_["SaveDataForTest"] == true)
 		{
 			cv::imwrite("test_data/ori_image" + birdeyeresolution + ".jpg", color_image);
@@ -2586,7 +2587,7 @@ void DirtDetection::SplitIntoTrainAndTestSamples(	int NumTestSamples,
 void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image, cv::Mat& C1_BlackWhite_image, cv::Mat& C3_color_image, std::vector<cv::RotatedRect>& dirtDetections, const cv::Mat& mask)
 {
 	// dirt detection on image with artificial dirt
-	cv::Mat color_image_with_artifical_dirt = C3_color_image.clone();
+	cv::Mat color_image_with_artificial_dirt = C3_color_image.clone();
 	cv::Mat mask_with_artificial_dirt = mask.clone();
 	// add dirt
 	int dirtSize = cvRound(3.0/640.0 * C3_color_image.cols);
@@ -2594,38 +2595,40 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 	cv::Point2f ur(0.5625*C3_color_image.cols, 0.416666667*C3_color_image.rows);
 	cv::Point2f ll(0.4375*C3_color_image.cols, 0.583333333*C3_color_image.rows);
 	cv::Point2f lr(0.5625*C3_color_image.cols, 0.583333333*C3_color_image.rows);
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(ul, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artificial_dirt, cv::RotatedRect(ul, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(ul, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(lr, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
+	cv::ellipse(color_image_with_artificial_dirt, cv::RotatedRect(lr, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(lr, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(ll, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
+	cv::ellipse(color_image_with_artificial_dirt, cv::RotatedRect(ll, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(ll, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::ellipse(color_image_with_artifical_dirt, cv::RotatedRect(ur, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
+	cv::ellipse(color_image_with_artificial_dirt, cv::RotatedRect(ur, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(0, 0, 0), dirtSize);
 	cv::ellipse(mask_with_artificial_dirt, cv::RotatedRect(ur, cv::Size2f(dirtSize,dirtSize), 0), cv::Scalar(255, 255, 255), dirtSize);
-	cv::Mat C1_saliency_image_with_artifical_dirt;
-	SaliencyDetection_C3(color_image_with_artifical_dirt, C1_saliency_image_with_artifical_dirt, &mask_with_artificial_dirt, spectralResidualGaussianBlurIterations_);
-	//cv::imshow("ai_dirt", color_image_with_artifical_dirt);
+	cv::Mat C1_saliency_image_with_artificial_dirt;
+	SaliencyDetection_C3(color_image_with_artificial_dirt, C1_saliency_image_with_artificial_dirt, &mask_with_artificial_dirt, spectralResidualGaussianBlurIterations_);
+	//cv::imshow("ai_dirt", color_image_with_artificial_dirt);
 
 	// display of images with artificial dirt
-	if (debug_["showColorWithArtificialDirt"] == true)
-		cv::imshow("color with artificial dirt", color_image_with_artifical_dirt);
-	cv::Mat C1_saliency_image_with_artifical_dirt_scaled;
+	if (debug_["showColorWithArtificialDirt"] == true){
+		cv::imshow("color with artificial dirt", color_image_with_artificial_dirt);
+	}
+	cv::Mat C1_saliency_image_with_artificial_dirt_scaled;
 	double salminv, salmaxv;
 	cv::Point2i salminl, salmaxl;
-	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&salminv,&salmaxv,&salminl,&salmaxl, mask_with_artificial_dirt);
-	C1_saliency_image_with_artifical_dirt.convertTo(C1_saliency_image_with_artifical_dirt_scaled, -1, 1.0/(salmaxv-salminv), -1.0*(salminv)/(salmaxv-salminv));
-	if (debug_["showSaliencyWithArtificialDirt"] == true)
-		cv::imshow("saliency with artificial dirt", C1_saliency_image_with_artifical_dirt_scaled);
+	cv::minMaxLoc(C1_saliency_image_with_artificial_dirt,&salminv,&salmaxv,&salminl,&salmaxl, mask_with_artificial_dirt);
+	C1_saliency_image_with_artificial_dirt.convertTo(C1_saliency_image_with_artificial_dirt_scaled, -1, 1.0/(salmaxv-salminv), -1.0*(salminv)/(salmaxv-salminv));
+	if (debug_["showSaliencyWithArtificialDirt"] == true){
+		cv::imshow("saliency with artificial dirt", C1_saliency_image_with_artificial_dirt_scaled);
+	}
 
 	// scale C1_saliency_image to value obtained from C1_saliency_image with artificially added dirt
-//	std::cout << "res_img: " << C1_saliency_image_with_artifical_dirt.at<float>(300,200);
-//	C1_saliency_image_with_artifical_dirt = C1_saliency_image_with_artifical_dirt.mul(C1_saliency_image_with_artifical_dirt);	// square C1_saliency_image_with_artifical_dirt to emphasize the dirt and increase the gap to background response
-//	std::cout << " -> " << C1_saliency_image_with_artifical_dirt.at<float>(300,200) << std::endl;
+	std::cout << "res_img: " << C1_saliency_image_with_artificial_dirt.at<float>(300,200);
+//	C1_saliency_image_with_artificial_dirt = C1_saliency_image_with_artificial_dirt.mul(C1_saliency_image_with_artificial_dirt);	// square C1_saliency_image_with_artificial_dirt to emphasize the dirt and increase the gap to background response
+	std::cout << " -> " << C1_saliency_image_with_artificial_dirt.at<float>(300,200) << std::endl;
 	double minv, maxv;
 	cv::Point2i minl, maxl;
-	cv::minMaxLoc(C1_saliency_image_with_artifical_dirt,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
+	cv::minMaxLoc(C1_saliency_image_with_artificial_dirt,&minv,&maxv,&minl,&maxl, mask_with_artificial_dirt);
 	cv::Scalar mean, stdDev;
-	cv::meanStdDev(C1_saliency_image_with_artifical_dirt, mean, stdDev, mask);
+	cv::meanStdDev(C1_saliency_image_with_artificial_dirt, mean, stdDev, mask);
 	double newMaxVal = std::min(1.0, maxv/spectralResidualNormalizationHighestMaxValue_);///mean.val[0] / spectralResidualNormalizationHighestMaxMeanRatio_);
 //	std::cout << "dirtThreshold=" << dirtThreshold_ << "\tmin=" << minv << "\tmax=" << maxv << "\tmean=" << mean.val[0] << "\tstddev=" << stdDev.val[0] << "\tnewMaxVal (r)=" << newMaxVal << std::endl;
 
@@ -2639,7 +2642,7 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 
 
 	////C1_saliency_image.convertTo(scaled_input_image, -1, 1.0/(maxv-minv), 1.0*(minv)/(maxv-minv));
-	cv::Mat scaled_C1_saliency_image = C1_saliency_image.clone();	// square C1_saliency_image_with_artifical_dirt to emphasize the dirt and increase the gap to background response
+	cv::Mat scaled_C1_saliency_image = C1_saliency_image.clone();	// square C1_saliency_image_with_artificial_dirt to emphasize the dirt and increase the gap to background response
 	//scaled_C1_saliency_image = scaled_C1_saliency_image.mul(scaled_C1_saliency_image);
 	scaled_C1_saliency_image.convertTo(scaled_C1_saliency_image, -1, newMaxVal/(maxv-minv), -newMaxVal*(minv)/(maxv-minv));
 

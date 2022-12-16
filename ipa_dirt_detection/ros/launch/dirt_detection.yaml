@@ -32,7 +32,7 @@ dirtDetectionActivatedOnStartup: true
 
 # if true, image warping to a bird's eye perspective is enabled
 # bool
-warpImage: true
+warpImage: false
 
 # resolution for bird eye's perspective [pixel/m]
 # double
@@ -53,7 +53,7 @@ maxDistanceToCamera: 3.00
 
 # if true, strong lines in the image will not produce dirt responses
 # bool
-removeLines: false
+removeLines: true
 
 # spatial resolution of the dirt detection grid in [cells/m], do not use too many cells per meter unless your localization is extremely accurate, 10-20 cells per meter are appropriate if your localization is as accurate as +/-5 cm
 # if set <0 then the grid resolution of the navigation map is used if available
@@ -94,13 +94,13 @@ experimentSubFolder: test
 # all flags are of type bool
 
 # displays the original source image that comes with the point cloud data
-showOriginalImage: true #true
+showOriginalImage: false #true
 
 # shows only the part of the color image that belongs to the plane, the remainder is masked black
 showPlaneColorImage: false #true
 
 # shows the warped color image of the plane
-showWarpedOriginalImage: true
+showWarpedOriginalImage: false
 
 # displays the saliency image before rescaling
 showSaliencyBadScale: false
