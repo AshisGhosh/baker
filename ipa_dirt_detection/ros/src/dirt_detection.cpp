@@ -2734,9 +2734,9 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 		for (int t=0; t<(int)contours[i].size(); t++)
 		{
 			meanIntensity += scaled_C1_saliency_image.at<float>(contours[i][t].y, contours[i][t].x);
-			int basescale_x = (int) 1. / image_scaling * contours[i][t].x;
-			int basescale_y = (int) 1. / image_scaling * contours[i][t].y;
-			MultiscaleScores.at<float>(basescale_y, basescale_x) += 1.;
+			// int basescale_x = (int) 1. / image_scaling * contours[i][t].x;
+			// int basescale_y = (int) 1. / image_scaling * contours[i][t].y;
+			// MultiscaleScores.at<float>(basescale_y, basescale_x) += 1.;
 		}
 		meanIntensity /= (double)contours[i].size();
 		if (meanIntensity > newMean + dirtCheckStdDevFactor_ * newStdDev)
@@ -2749,10 +2749,10 @@ void DirtDetection::Image_Postprocessing_C1_rmb(const cv::Mat& C1_saliency_image
 			cv::ellipse(C3_color_image, rec, green, 2);	// todo: use red
 		dirtDetections.push_back(rec);
 	}
-	cv::imshow("MultiscaleScores", MultiscaleScores*255.);
-	cv::imwrite("test_data/MultiscaleScores_" + framenumbag + ".jpg", MultiscaleScores);
-	if (image_scaling == 1.0)
-		cv::imwrite("test_data/Multiscale_" + framenumbag + ".jpg", C3_color_image);
+	// cv::imshow("MultiscaleScores", MultiscaleScores*255.);
+	// cv::imwrite("test_data/MultiscaleScores_" + framenumbag + ".jpg", MultiscaleScores);
+	// if (image_scaling == 1.0)
+	// 	cv::imwrite("test_data/Multiscale_" + framenumbag + ".jpg", C3_color_image);
 }
 
 
